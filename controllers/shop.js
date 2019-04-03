@@ -124,6 +124,7 @@ exports.postOrder = (req, res, next) => {
   req.user
     .getCart()
     .then(cart => {
+      
       fetchedCart = cart;
       return cart.getProducts();
     })
@@ -138,7 +139,7 @@ exports.postOrder = (req, res, next) => {
             })
           );
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log('create order',err));
     })
     .then(result => {
       return fetchedCart.setProducts(null);
@@ -151,8 +152,9 @@ exports.postOrder = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({include: ['products']})
+    .getOrders({ include: [{ association: 'products' }] })
     .then(orders => {
+      console.log(orders)
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',

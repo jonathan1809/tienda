@@ -1,24 +1,46 @@
 <%- include('../includes/head.ejs') %>
-    </head>
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/product.css">
+</head>
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main>
-            <% if (orders.length <= 0) { %>
-                <h1>Nothing there!</h1>
-            <% } else { %>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (orders.length <= 0) { %>
+        <h1>No tienes ordenes pendientes!</h1>
+        <% } else { %>
+        <ul>
+            <% orders.forEach(order => { %>
+            <li>
+                <h1>Orden no. <%= order.id %></h1>
                 <ul>
-                    <% orders.forEach(order => { %>
-                        <li>
-                            <h1># <%= order.id %></h1>
-                            <ul>
-                                <% order.products.forEach(product => { %>
-                                    <li><%= product.title %> (<%= product.orderItem.quantity %>)</li>
-                                <% }); %>
-                            </ul>
-                        </li>
+                    <% order.products.forEach(product => { %>
+                    <div class="grid">
+                        
+                        <article class="card product-item">
+                            <header class="card__header">
+                                <h1 class="product__title">
+                                    <%= product.title %> : cantidad: (<%= product.orderItem.quantity %>)
+                                </h1>
+                            </header>
+                            <div class="card__image">
+                                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                            </div>
+                            <div class="card__content">
+                                <h2 class="product__price">$
+                                    <%= product.price %>
+                                </h2>
+                                <p class="product__description">
+                                    <%= product.description %>
+                                </p>
+                            </div>
+                        </article>
+                    </div>
                     <% }); %>
                 </ul>
-            <% } %>
-        </main>
-        <%- include('../includes/end.ejs') %>
+            </li>
+            <% }); %>
+        </ul>
+        <% } %>
+    </main>
+    <%- include('../includes/end.ejs') %>
