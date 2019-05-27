@@ -1,5 +1,5 @@
 <div class="backdrop"></div>
-<header class="main-header">
+<!-- <header class="main-header">
     <button id="side-menu-toggle">Menu</button>
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
@@ -50,4 +50,56 @@
                     </a>
                 </li>
             </ul>
-</nav>
+</nav> -->
+
+
+<header class="site-navbar" role="banner">
+    <div class="site-navbar-top">
+      <div class="container">
+        <div class="row align-items-center">
+
+          <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+            <form action="/products" class="site-block-top-search" method="get">
+              <span class="icon icon-search2"></span>
+              <input type="text" class="form-control border-0" name="search" id="search "placeholder="Search">
+            </form>
+          </div>
+
+          <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+            <div class="site-logo">
+              <a href="/" class="js-logo-clone">Ra store</a>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+            <div class="site-top-icons">
+              <ul>
+               
+                <li>
+                  <a href="/cart" class="site-cart">
+                    <span class="icon icon-shopping_cart"></span>
+                    <span class="count">2</span>
+                  </a>
+                </li> 
+                <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a></li>
+              </ul>
+            </div> 
+          </div>
+
+        </div>
+      </div>
+    </div> 
+    <nav class="site-navigation text-right text-md-center" role="navigation">
+      <div class="container">
+        <ul class="site-menu js-clone-nav d-none d-md-block">
+          <li class="<%= path === '/Inicio' ? 'active' : '' %>">
+            <a href="index.html">Inicio</a>
+          <li class="<%= path === '/' ? 'active' : '' %>"><a href="/">Tienda</a></li>
+          <li class="<%= path === '/products' ? 'active' : '' %>"><a href="/products">Productos</a></li>
+          <li class="<%= path === '/orders' ? 'active' : '' %>"><a href="/orders">Ordenes</a></li>
+          <li class="<%= path === '/admin/add-product' ? 'active' : '' %>"><a href="/admin/add-product">Agregar producto</a></li>
+          <li class="<%= path === '/admin/products' ? 'active' : '' %>"><a href="/admin/products">Administrar productos</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>

@@ -1,52 +1,153 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/forms.css">
-<link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <main>
-        <div>
-            <form action="/admin/search" method="post">
-                <div class="form-control" style="width:200px">
-                    <label for="title">Buscar</label>
-                    <input type="text" name="title" id="title" value="">
-                </div>
-                <div class="form-control" style="width:200px">
-                    <input type="submit" value="Buscar">
-                </div>
-            </form>
-        </div>
-        <% if (prods.length > 0) { %>
-        <div class="grid">
-            <% for (let product of prods) { %>
-            <article class="card product-item">
-                <header class="card__header">
-                    <h1 class="product__title">
-                        <%= product.title %>
-                    </h1>
-                </header>
-                <div class="card__image">
-                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-                </div>
-                <div class="card__content">
-                    <h2 class="product__price">$
-                        <%= product.price %>
-                    </h2>
-                    <p class="product__description">
-                        <%= product.description %>
-                    </p>
-                </div>
-                <div class="card__actions">
-                    <a href="/products/<%= product.id %>" class="btn">Details</a>
-                    <%- include('../includes/add-to-cart.ejs', {product: product}) %>
-                </div>
-            </article>
-            <% } %>
-        </div>
-        <% } else { %>
-        <h1>No Products Found!</h1>
-        <% } %>
-    </main>
-    <%- include('../includes/end.ejs') %>
+        <div class="site-wrap">
+
+
+
+
+            <div class="site-section">
+                <div class="container">
+
+                    <div class="row mb-5">
+                        <div class="col-md-9 order-2">
+
+                            <div class="row mb-5">
+                                <% if (prods.length> 0) { %>
+                                    <div class="grid">
+                                        <% for (let product of prods) { %>
+                                            <article class="card product-item">
+                                                <header class="card__header">
+                                                    <h1 class="product__title">
+                                                        <%= product.title %>
+                                                        </h1>
+                                                    </header>
+                                                    <div class="card__image">
+                                                        <img src="<%=
+                                                            product.imageUrl %>"
+                                                        alt="<%= product.title
+                                                            %>">
+                                                        </div>
+                                                        <div
+                                                            class="card__content">
+                                                            <h2
+                                                                class="product__price">$
+                                                                <%=
+                                                                    product.price
+                                                                    %>
+                                                                </h2>
+                                                                <p
+                                                                    class="product__description">
+                                                                    <%=
+                                                                        product.description
+                                                                        %>
+                                                                    </p>
+                                                                </div>
+                                                                <div
+                                                                    class="card__actions">
+                                                                    <a
+                                                                        href="/products/<%=
+                                                                        product.id
+                                                                        %>"
+                                                                        class="btn">Details</a>
+                                                                    <%-
+                                                                        include('../includes/add-to-cart.ejs',
+                                                                        {product:
+                                                                        product})
+                                                                        %>
+                                                                    </div>
+                                                                </article>
+                                                                <% } %>
+                                                                </div>
+                                                                <% } else { %>
+                                                                    <h1>No
+                                                                        Products
+                                                                        Found!</h1>
+                                                                    <% } %>
+                            </div>
+                            </div>
+
+
+                                                                <div
+                                                                    class="col-md-3
+                                                                    order-1 mb-5
+                                                                    mb-md-0">
+                                                                
+                                                                    <div
+                                                                        class="border
+                                                                        p-4
+                                                                        rounded
+                                                                        mb-4">
+                                                                        <div
+                                                                            class="mb-4">
+                                                                            <h3
+                                                                                class="mb-3
+                                                                                h6
+                                                                                text-uppercase
+                                                                                text-black
+                                                                                d-block">Filtrar por precio</h3>
+                                                                            <div
+                                                                                id="slider-range"
+                                                                                class="border-primary"></div>
+                                                                        <form action="/products" method="get">
+                                                                            <input
+                                                                                type="text"
+                                                                                name="amount"
+                                                                                id="amount"
+                                                                                class="form-control
+                                                                                border-0
+                                                                                pl-0
+                                                                                bg-white"
+                                                                                disabled=""
+                                                                                />
+                                                                                <input type="hidden" name="min" id="min" value="0">
+                                                                                <input type="hidden" name="max" id="max" value="5000">
+                                                                                
+
+                                                                                <button type="submit" class="btn btn-info">Aplicar</button>
+                                                                            </form>  
+                                                                        </div>
+                                                                        <div
+                                                                            class="mb-4">
+                                                                            <form action="/products" method="get">
+                                                                            <h3
+                                                                                class="mb-3
+                                                                                h6
+                                                                                text-uppercase
+                                                                                text-black
+                                                                                d-block">Tipo</h3>
+                                                                                <% if (types.length> 0) { %>
+                                                                                <% for (let type of types) { %>
+                                                                                    <label
+                                                                                    for="<%=type.dataValues.Type%>"
+                                                                                    class="d-flex">
+                                                                                    <input
+                                                                                        type="checkbox"
+                                                                                        id="<%=type.dataValues.Type%>"
+                                                                                        name="<%=type.dataValues.Type%>"
+                                                                                        class="mr-2
+                                                                                        mt-1">
+                                                                                    <span
+                                                                                        class="text-black">
+                                                                                        <%=type.dataValues.Type%>
+                                                                                        (<%=type.dataValues.Count%>)
+                                                                                        </span>
+                                                                                </label>
+                                                                                <% } %>  
+                                                                                <% } %>   
+                                                                                <button type="submit" class="btn btn-info">Aplicar</button>
+                                                                            </form>                                                           
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                   
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <%-include('../includes/end.ejs')%>

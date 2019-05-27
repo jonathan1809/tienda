@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Op = require('sequelize').Op
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -19,7 +18,8 @@ exports.postAddProduct = (req, res, next) => {
       title: title,
       price: price,
       imageUrl: imageUrl,
-      description: description
+      description: description,
+      type: req.body.type
     })
     .then(result => {
       // console.log(result);
@@ -67,6 +67,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDesc;
       product.imageUrl = updatedImageUrl;
+      product.type = req.body.type
       return product.save();
     })
     .then(result => {
@@ -98,20 +99,6 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(result => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
-    })
-    .catch(err => console.log(err));
-};
-
-
-exports.postBuscarProducto = (req, res, next) => {
-  const title = req.body.title;
-  Product.findAll({ where: { title: { [Op.like]: `%${title}%` } } })
-    .then(products => {
-      res.render('shop/product-list', {
-        prods: products,
-        pageTitle: title,
-        path: '/products'
-      });
     })
     .catch(err => console.log(err));
 };

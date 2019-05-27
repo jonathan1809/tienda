@@ -1,17 +1,104 @@
 const Product = require('../models/product');
+const sequelize = require('sequelize');
+const Op = sequelize.Op
+exports.getProducts = async (req, res, next) => {
+  const min = req.query.min;
+  const max = req.query.max;
+  const search = req.query.search;
+  const type = req.query;
 
-exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  // console.log(min, max, type)
+  const types = await Product.findAll({
+    group: ['Type'],
+    attributes: ['Type', [sequelize.fn('COUNT', 'Type'), 'Count']],
+  })
+  // types.forEach(type => {
+  //   console.log(type.dataValues)
+  // });
+  if(search){
+    const criteria = {
+      title: {
+        [Op.substring]: search
+      }
+    };
+    Product.findAll({ where: criteria })
     .then(products => {
+
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
-        path: '/products'
+        path: '/products',
+        types: types
       });
     })
     .catch(err => {
       console.log(err);
     });
+  }
+  else if (min && max) {
+    var conditionalData = {
+      price: {
+        [Op.between]: [min, max]
+      }
+    };
+    Product.findAll({ where: conditionalData })
+      .then(products => {
+
+        res.render('shop/product-list', {
+          prods: products,
+          pageTitle: 'All Products',
+          path: '/products',
+          types: types
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else if (Object.entries(type).length > 0) {
+    const typesFilter = []
+    for (const key in type) {
+      if (type.hasOwnProperty(key)) {
+        const element = type[key];
+        typesFilter.push({ type: key })
+      }
+    }
+    console.log(typesFilter)
+    var conditionalData = {
+     
+        [Op.or]: typesFilter
+      
+    };
+
+    Product.findAll({ where: conditionalData })
+      .then(products => {
+
+        res.render('shop/product-list', {
+          prods: products,
+          pageTitle: 'All Products',
+          path: '/products',
+          types: types
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    Product.findAll()
+      .then(products => {
+        res.render('shop/product-list', {
+          prods: products,
+          pageTitle: 'All Products',
+          path: '/products',
+          types: types
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
 };
 
 exports.getProduct = (req, res, next) => {
@@ -124,7 +211,6 @@ exports.postOrder = (req, res, next) => {
   req.user
     .getCart()
     .then(cart => {
-      
       fetchedCart = cart;
       return cart.getProducts();
     })
@@ -139,7 +225,7 @@ exports.postOrder = (req, res, next) => {
             })
           );
         })
-        .catch(err => console.log('create order',err));
+        .catch(err => console.log(err));
     })
     .then(result => {
       return fetchedCart.setProducts(null);
@@ -147,14 +233,13 @@ exports.postOrder = (req, res, next) => {
     .then(result => {
       res.redirect('/orders');
     })
-    .catch(err => console.log(err));
+    .catch(err =>  res.redirect('/orders'));
 };
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: [{ association: 'products' }] })
+    .getOrders({ include: ['products'] })
     .then(orders => {
-      console.log(orders)
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
