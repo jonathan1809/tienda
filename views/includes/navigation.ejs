@@ -74,7 +74,9 @@
           <div class="col-6 col-md-4 order-3 order-md-3 text-right">
             <div class="site-top-icons">
               <ul>
-               
+               <li>
+                <%= session.user.name %>"
+               </li>
                 <li>
                   <a href="/cart" class="site-cart">
                     <span class="icon icon-shopping_cart"></span>
@@ -97,8 +99,16 @@
           <li class="<%= path === '/' ? 'active' : '' %>"><a href="/">Tienda</a></li>
           <li class="<%= path === '/products' ? 'active' : '' %>"><a href="/products">Productos</a></li>
           <li class="<%= path === '/orders' ? 'active' : '' %>"><a href="/orders">Ordenes</a></li>
+          <% if (session.user.name === 'Admin'> 0) { %>
           <li class="<%= path === '/admin/add-product' ? 'active' : '' %>"><a href="/admin/add-product">Agregar producto</a></li>
           <li class="<%= path === '/admin/products' ? 'active' : '' %>"><a href="/admin/products">Administrar productos</a></li>
+          <% } if (!session.isLoggedIn){ %>
+            <li class="<%= path === '/admin/login' ? 'active' : '' %>"><a href="/login">Iniciar sesión</a></li>
+            <li class="<%= path === '/admin/signup' ? 'active' : '' %>"><a href="/signup">Registrar</a></li>
+            <%  } else{ %>
+              <li class="<%= path === '/admin/login' ? 'active' : '' %>"><a href="/logout">Cerrar sesión</a></li>
+            <% }%>
+
         </ul>
       </div>
     </nav>

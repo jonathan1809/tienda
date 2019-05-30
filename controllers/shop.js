@@ -24,7 +24,9 @@ exports.getProducts = async (req, res, next) => {
     Product.findAll({ where: criteria })
     .then(products => {
 
+      const session= req.session;
       res.render('shop/product-list', {
+        session:session,
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
@@ -35,16 +37,28 @@ exports.getProducts = async (req, res, next) => {
       console.log(err);
     });
   }
-  else if (min && max) {
+  else if (min && max && Object.entries(type).length > 2) {
+    const typesFilter = []
+    for (const key in type) {
+      if (type.hasOwnProperty(key)) {
+        const element = type[key];
+        typesFilter.push({ type: key })
+      }
+    }
     var conditionalData = {
+      [Op.or]: typesFilter,
       price: {
+       
         [Op.between]: [min, max]
       }
     };
+ 
     Product.findAll({ where: conditionalData })
       .then(products => {
 
+        const session= req.session;
         res.render('shop/product-list', {
+          session:session,
           prods: products,
           pageTitle: 'All Products',
           path: '/products',
@@ -63,7 +77,6 @@ exports.getProducts = async (req, res, next) => {
         typesFilter.push({ type: key })
       }
     }
-    console.log(typesFilter)
     var conditionalData = {
      
         [Op.or]: typesFilter
@@ -73,7 +86,9 @@ exports.getProducts = async (req, res, next) => {
     Product.findAll({ where: conditionalData })
       .then(products => {
 
+        const session= req.session;
         res.render('shop/product-list', {
+          session:session,
           prods: products,
           pageTitle: 'All Products',
           path: '/products',
@@ -87,7 +102,9 @@ exports.getProducts = async (req, res, next) => {
   else {
     Product.findAll()
       .then(products => {
+        const session= req.session;
         res.render('shop/product-list', {
+          session:session,
           prods: products,
           pageTitle: 'All Products',
           path: '/products',
@@ -114,7 +131,9 @@ exports.getProduct = (req, res, next) => {
   //   .catch(err => console.log(err));
   Product.findByPk(prodId)
     .then(product => {
+      const session= req.session;
       res.render('shop/product-detail', {
+        session:session,
         product: product,
         pageTitle: product.title,
         path: '/products'
@@ -126,7 +145,9 @@ exports.getProduct = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
   Product.findAll()
     .then(products => {
+      const session= req.session;
       res.render('shop/index', {
+        session:session,
         prods: products,
         pageTitle: 'Shop',
         path: '/'
@@ -144,7 +165,9 @@ exports.getCart = (req, res, next) => {
       return cart
         .getProducts()
         .then(products => {
+          const session= req.session;
           res.render('shop/cart', {
+            session:session,
             path: '/cart',
             pageTitle: 'Your Cart',
             products: products
@@ -240,7 +263,9 @@ exports.getOrders = (req, res, next) => {
   req.user
     .getOrders({ include: ['products'] })
     .then(orders => {
+      const session= req.session;
       res.render('shop/orders', {
+        session:session,
         path: '/orders',
         pageTitle: 'Your Orders',
         orders: orders

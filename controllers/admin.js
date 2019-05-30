@@ -1,7 +1,9 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
+  const session= req.session;
   res.render('admin/edit-product', {
+    session:session,
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false
@@ -45,7 +47,9 @@ exports.getEditProduct = (req, res, next) => {
       if (!product) {
         return res.redirect('/');
       }
+const session= req.session;
       res.render('admin/edit-product', {
+        session:session,
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
@@ -81,7 +85,10 @@ exports.getProducts = (req, res, next) => {
   req.user
     .getProducts()
     .then(products => {
+
+      const session= req.session;
       res.render('admin/products', {
+        session:session,
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products'

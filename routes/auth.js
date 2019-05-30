@@ -15,9 +15,9 @@ router.post(
   [
     body('email')
       .isEmail()
-      .withMessage('Please enter a valid email address.')
+      .withMessage('Ingresa un email valido')
       .normalizeEmail(),
-    body('password', 'Password has to be valid.')
+    body('password', 'La contraseña no es valida')
       .isLength({ min: 5 })
       .isAlphanumeric()
       .trim()
@@ -36,10 +36,10 @@ router.post(
         //   throw new Error('This email address if forbidden.');
         // }
         // return true;
-        return User.findOne({ email: value }).then(userDoc => {
+        return User.findOne({where: { email: value }}).then(userDoc => {
           if (userDoc) {
             return Promise.reject(
-              'E-Mail exists already, please pick a different one.'
+              'El correo ya existe, usa uno diferente'
             );
           }
         });
@@ -47,7 +47,7 @@ router.post(
       .normalizeEmail(),
     body(
       'password',
-      'Please enter a password with only numbers and text and at least 5 characters.'
+      'La contraseña debe ser de al menos 5 caracteres y debe contener numeros y letras'
     )
       .isLength({ min: 5 })
       .isAlphanumeric()
@@ -56,7 +56,7 @@ router.post(
       .trim()
       .custom((value, { req }) => {
         if (value !== req.body.password) {
-          throw new Error('Passwords have to match!');
+          throw new Error('Las contraseña no coincide');
         }
         return true;
       })
@@ -64,7 +64,7 @@ router.post(
   authController.postSignup
 );
 
-router.post('/logout', authController.postLogout);
+router.get('/logout', authController.postLogout);
 
 router.get('/reset', authController.getReset);
 

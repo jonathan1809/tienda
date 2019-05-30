@@ -17,16 +17,18 @@ const transporter = nodemailer.createTransport(
 );
 
 exports.getLogin = (req, res, next) => {
-  let message = req.flash('error');
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
+  // let message = req.flash('error');
+  // if (message.length > 0) {
+  //   message = message[0];
+  // } else {
+  //   message = null;
+  // }
+const session= req.session;
   res.render('auth/login', {
+    session:session,
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: message,
+    errorMessage: '',
     oldInput: {
       email: '',
       password: ''
@@ -36,16 +38,18 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
-  let message = req.flash('error');
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
+  // let message = req.flash('error');
+  // if (message.length > 0) {
+  //   message = message[0];
+  // } else {
+  //   message = null;
+  // }
+  const session= req.session;
   res.render('auth/signup', {
+    session:session,
     path: '/signup',
     pageTitle: 'Signup',
-    errorMessage: message,
+    errorMessage: '',
     oldInput: {
       email: '',
       password: '',
@@ -61,7 +65,9 @@ exports.postLogin = (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    const session= req.session;
     return res.status(422).render('auth/login', {
+      session:session,
       path: '/login',
       pageTitle: 'Login',
       errorMessage: errors.array()[0].msg,
@@ -73,10 +79,12 @@ exports.postLogin = (req, res, next) => {
     });
   }
 
-  User.findOne({ email: email })
+  User.findOne({ where: { email: email } })
     .then(user => {
       if (!user) {
+        const session= req.session;
         return res.status(422).render('auth/login', {
+          session:session,
           path: '/login',
           pageTitle: 'Login',
           errorMessage: 'Invalid email or password.',
@@ -93,21 +101,29 @@ exports.postLogin = (req, res, next) => {
           if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
+            
             return req.session.save(err => {
               console.log(err);
               res.redirect('/');
             });
           }
+          const session= req.session;
           return res.status(422).render('auth/login', {
+            session:session,
             path: '/login',
             pageTitle: 'Login',
-            errorMessage: 'Invalid email or password.',
+            errorMessage: 'Email o contraseña incorrecta',
             oldInput: {
               email: email,
               password: password
             },
             validationErrors: []
           });
+        })
+        .then(session => {
+          const sessionL = req.session;
+          console.log(session,sessionL.user.name)  
+          res.redirect('/')
         })
         .catch(err => {
           console.log(err);
@@ -145,6 +161,7 @@ exports.postSignup = (req, res, next) => {
     .hash(password, 12)
     .then(hashedPassword => {
       const user = new User({
+        name:email,
         email: email,
         password: hashedPassword,
         cart: { items: [] }
@@ -168,19 +185,17 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postLogout = (req, res, next) => {
-  req.session.destroy(err => {
-    console.log(err);
+  req.session = null;
     res.redirect('/');
-  });
 };
 
 exports.getReset = (req, res, next) => {
-  let message = req.flash('error');
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
+  // let message = req.flash('error');
+  // if (message.length > 0) {
+  //   message = message[0];
+  // } else {
+  //   message = null;
+  // }
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
@@ -238,7 +253,7 @@ exports.getNewPassword = (req, res, next) => {
       res.render('auth/new-password', {
         path: '/new-password',
         pageTitle: 'New Password',
-        errorMessage: message,
+        errorMessage: '',
         userId: user._id.toString(),
         passwordToken: token
       });
